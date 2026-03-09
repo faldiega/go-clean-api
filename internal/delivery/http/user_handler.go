@@ -94,6 +94,11 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "invalid id")
 	}
 
+	user, err := h.usecase.GetUser(uint(id))
+	if err != nil {
+		return c.JSON(http.StatusNotFound, err.Error())
+	}
+
 	err = h.usecase.DeleteUser(uint(id))
 
 	if err != nil {
@@ -101,6 +106,6 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "user deleted",
+		"message": "user deleted. [" + user.Name + "]",
 	})
 }
