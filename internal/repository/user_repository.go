@@ -3,6 +3,7 @@ package repository
 import (
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/repository"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -16,16 +17,14 @@ func NewUserRepository(db *gorm.DB) repository.UserRepository {
 }
 
 func (r *userRepository) FindAll() ([]entity.User, error) {
-
 	var users []entity.User
 
-	err := r.db.Find(&users).Error
+	err := r.db.Where("is_active = ?", true).Find(&users).Error
 
 	return users, err
 }
 
 func (r *userRepository) FindByID(id uint) (entity.User, error) {
-
 	var user entity.User
 
 	err := r.db.First(&user, id).Error
@@ -34,6 +33,13 @@ func (r *userRepository) FindByID(id uint) (entity.User, error) {
 }
 
 func (r *userRepository) Create(user entity.User) (entity.User, error) {
+	user = entity.User{
+		Name:        user.Name,
+		Email:       user.Email,
+		IsActive:    user.IsActive,
+		CreatedDate: time.Now(),
+		UpdatedDate: time.Now(),
+	}
 
 	err := r.db.Create(&user).Error
 
@@ -41,8 +47,13 @@ func (r *userRepository) Create(user entity.User) (entity.User, error) {
 }
 
 func (r *userRepository) Update(user entity.User) (entity.User, error) {
+	user.UpdatedDate = time.Now()
 
-	err := r.db.Save(&user).Error
+	err := r.db.
+		Model(&entity.User{}).
+		Where("id = ?", user.ID).
+		Select("Name", "Email", "IsActive", "UpdatedDate").
+		Updates(user).Error
 
 	return user, err
 }
