@@ -24,7 +24,7 @@ func (r *userRepository) FindAll() ([]entity.User, error) {
 	return users, err
 }
 
-func (r *userRepository) FindByID(id uint) (entity.User, error) {
+func (r *userRepository) FindByID(id int) (entity.User, error) {
 	var user entity.User
 
 	err := r.db.First(&user, id).Error
@@ -58,7 +58,7 @@ func (r *userRepository) Update(user entity.User) (entity.User, error) {
 	return user, err
 }
 
-func (r *userRepository) Delete(id uint) error {
+func (r *userRepository) Delete(id int) error {
 
 	return r.db.Delete(&entity.User{}, id).Error
 }

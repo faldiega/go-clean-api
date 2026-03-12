@@ -18,7 +18,7 @@ func (u *userUsecase) GetUsers() ([]entity.User, error) {
 	return u.repo.FindAll()
 }
 
-func (u *userUsecase) GetUser(id uint) (entity.User, error) {
+func (u *userUsecase) GetUser(id int) (entity.User, error) {
 	return u.repo.FindByID(id)
 }
 
@@ -30,6 +30,6 @@ func (u *userUsecase) UpdateUser(user entity.User) (entity.User, error) {
 	return u.repo.Update(user)
 }
 
-func (u *userUsecase) DeleteUser(id uint) error {
+func (u *userUsecase) DeleteUser(id int) error {
 	return u.repo.Delete(id)
 }
