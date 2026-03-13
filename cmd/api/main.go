@@ -27,6 +27,6 @@ func main() {
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	httpDelivery.NewUserHandler(e, userUsecase)
 
-	e.Logger.Fatal(e.Start(":8080"))
 	logger.Info("server started on port 8080")
+	e.Logger.Fatal(e.Start(":8080"))
 }
