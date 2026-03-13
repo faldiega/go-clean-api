@@ -12,11 +12,21 @@ import (
 func main() {
 
 	e := echo.New()
-	db := config.InitDB()
 
+	logger, err := config.InitLogger()
+	if err != nil {
+		panic(err)
+	}
+
+	defer logger.Sync()
+
+	logger.Info("application starting")
+
+	db := config.InitDB()
 	userRepo := repository.NewUserRepository(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	httpDelivery.NewUserHandler(e, userUsecase)
 
 	e.Logger.Fatal(e.Start(":8080"))
+	logger.Info("server started on port 8080")
 }
