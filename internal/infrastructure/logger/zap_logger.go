@@ -1,27 +1,26 @@
-package config
+package logger
 
 import (
 	"fmt"
+	"go-simple-api/internal/config"
+	"go-simple-api/internal/utils"
 	"os"
-	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func InitLogger() (*zap.Logger, error) {
+func InitLogger(cfg *config.Config) (*zap.Logger, error) {
 
-	date := time.Now().Format("2006-01-02")
-
-	filename := fmt.Sprintf("logs/app_%s.log", date)
+	filename := fmt.Sprintf("logs/%s.log", cfg.LogFilename)
 
 	logWriter := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   filename,
-		MaxSize:    10, // MB
-		MaxBackups: 5,  // file
-		MaxAge:     1,  // days
-		Compress:   true,
+		MaxSize:    utils.StringToInt(cfg.LogMaxSize),    // MB
+		MaxBackups: utils.StringToInt(cfg.LogMaxBackups), // file
+		MaxAge:     utils.StringToInt(cfg.LogMaxAge),     // days
+		Compress:   utils.StringToBool(cfg.LogCompress),
 	})
 
 	consoleWriter := zapcore.AddSync(os.Stdout)
@@ -41,4 +40,5 @@ func InitLogger() (*zap.Logger, error) {
 	logger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
 
 	return logger, nil
+
 }
