@@ -14,6 +14,7 @@ func main() {
 	use := Initialize(conf)
 	use.InitLogger()
 	use.Database()
+	// use.EchoMiddleware()		// take a note
 	use.DependencyInjection(e)
 
 	log := use.ZapLogger

@@ -14,6 +14,22 @@ type UserHandler struct {
 	usecase usecase.UserUsecase
 }
 
+/*
+# Group Routing Notes
+
+e := echo.New()
+
+api := e.Group("/api/v1")
+
+user := api.Group("/users")
+user.GET("/profile", GetProfile)
+user.POST("/register", Register)
+
+product := api.Group("/products")
+product.GET("", GetProducts)
+product.GET("/:id", GetProductDetail)
+*/
+
 func NewUserHandler(e *echo.Echo, uc usecase.UserUsecase) {
 	handler := &UserHandler{uc}
 
