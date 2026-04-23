@@ -14,14 +14,8 @@ type UserHandler struct {
 	usecase usecase.UserUsecase
 }
 
-func NewUserHandler(e *echo.Echo, uc usecase.UserUsecase) {
-	handler := &UserHandler{uc}
-
-	e.GET("/users", handler.GetUserList)
-	e.GET("/users/:id", handler.GetUser)
-	e.POST("/users", handler.CreateUser)
-	e.PUT("/users/:id", handler.UpdateUser)
-	e.DELETE("/users/:id", handler.DeleteUser)
+func NewUserHandler(uc usecase.UserUsecase) *UserHandler {
+	return &UserHandler{uc}
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {
