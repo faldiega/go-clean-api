@@ -1,9 +1,15 @@
 package config
 
 type Config struct {
-	Database Database
-	Logger   ZapModel
-	Jwt      Jwt
+	AppName    string
+	AppSecret  string
+	AppHost    string
+	AppPort    string
+	AppEnv     string
+	AppVersion string
+	Database   Database
+	Logger     ZapModel
+	Jwt        Jwt
 }
 
 type (
@@ -23,10 +29,10 @@ type (
 
 type ZapModel struct {
 	LogFilename   string
-	LogMaxSize    string
-	LogMaxBackups string
-	LogMaxAge     string
-	LogCompress   string
+	LogMaxSize    int
+	LogMaxBackups int
+	LogMaxAge     int
+	LogCompress   bool
 }
 
 type Jwt struct {
@@ -34,11 +40,12 @@ type Jwt struct {
 	JwtExpired string
 }
 
-func LoadConfig() Config {
+func LoadConfig() *Config {
 
 	LoadEnv("config.env")
 
-	return Config{
+	return &Config{
+		AppPort: Env("APP_PORT", defaultAppPort),
 		Database: Database{
 			DbGolangSimpleApi: DbConfig{
 				DBHost:     Env("DB_HOST", "localhost"),
@@ -51,10 +58,10 @@ func LoadConfig() Config {
 		},
 		Logger: ZapModel{
 			LogFilename:   Env("LOG_FILENAME", "app"),
-			LogMaxSize:    Env("LOG_MAX_SIZE", "1"),
-			LogMaxBackups: Env("LOG_MAX_BACKUPS", "3"),
-			LogMaxAge:     Env("LOG_MAX_AGE", "1"),
-			LogCompress:   Env("LOG_COMPRESS", "true"),
+			LogMaxSize:    EnvAsInt("LOG_MAX_SIZE", 1),
+			LogMaxBackups: EnvAsInt("LOG_MAX_BACKUPS", 3),
+			LogMaxAge:     EnvAsInt("LOG_MAX_AGE", 1),
+			LogCompress:   EnvAsBool("LOG_COMPRESS", true),
 		},
 		Jwt: Jwt{
 			JwtSecret:  Env("JWT_SECRET", "simplesecret"),

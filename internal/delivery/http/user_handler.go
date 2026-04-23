@@ -14,30 +14,8 @@ type UserHandler struct {
 	usecase usecase.UserUsecase
 }
 
-/*
-# Group Routing Notes
-
-e := echo.New()
-
-api := e.Group("/api/v1")
-
-user := api.Group("/users")
-user.GET("/profile", GetProfile)
-user.POST("/register", Register)
-
-product := api.Group("/products")
-product.GET("", GetProducts)
-product.GET("/:id", GetProductDetail)
-*/
-
-func NewUserHandler(e *echo.Echo, uc usecase.UserUsecase) {
-	handler := &UserHandler{uc}
-
-	e.GET("/users", handler.GetUserList)
-	e.GET("/users/:id", handler.GetUser)
-	e.POST("/users", handler.CreateUser)
-	e.PUT("/users/:id", handler.UpdateUser)
-	e.DELETE("/users/:id", handler.DeleteUser)
+func NewUserHandler(uc usecase.UserUsecase) *UserHandler {
+	return &UserHandler{uc}
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {

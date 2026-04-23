@@ -21,7 +21,7 @@ func NewAuthHandler(e *echo.Echo, cfg *config.Config) {
 
 func (h *AuthHandler) Login(c echo.Context) error {
 
-	// nanti ini diganti pakai request body
+	// nanti ini diganti pakai request body / validasi DB
 	userID := uint(1)
 
 	token, err := infrastructure.GenerateToken(userID, h.conf)

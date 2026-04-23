@@ -1,6 +1,7 @@
 package config
 
 import (
+	"go-simple-api/internal/utils"
 	"os"
 	"sync"
 
@@ -27,6 +28,26 @@ func Env(key string, defaultValue string) string {
 
 	if value, exists := os.LookupEnv(key); exists {
 		return value
+	}
+
+	return defaultValue
+}
+
+func EnvAsInt(key string, defaultValue int) int {
+
+	strVal := Env(key, "")
+	if strVal != "" {
+		return utils.StringToInt(strVal)
+	}
+
+	return defaultValue
+}
+
+func EnvAsBool(key string, defaultValue bool) bool {
+
+	strVal := Env(key, "")
+	if strVal != "" {
+		return utils.StringToBool(strVal)
 	}
 
 	return defaultValue

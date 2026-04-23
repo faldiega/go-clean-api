@@ -1,26 +1,12 @@
 package main
 
 import (
-	"go-simple-api/internal/config"
-
-	"github.com/labstack/echo/v4"
+	"go-simple-api/internal/initialize"
+	"go-simple-api/internal/server"
 )
 
 func main() {
 
-	e := echo.New()
-	conf := config.LoadConfig()
-
-	use := Initialize(conf)
-	use.InitLogger()
-	use.Database()
-	// use.EchoMiddleware()		// take a note
-	use.DependencyInjection(e)
-
-	log := use.ZapLogger
-
-	defer log.Sync()
-	log.Info("application starting")
-	log.Info("server started on port 8080")
-	e.Logger.Fatal(e.Start(":8080"))
+	container := initialize.NewContainer()
+	server.Start(container)
 }
