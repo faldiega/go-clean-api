@@ -1,7 +1,7 @@
 package routes
 
 import (
-	httpDelivery "go-simple-api/internal/delivery/http"
+	httpDelivery "go-simple-api/internal/delivery/http/handler"
 	"go-simple-api/internal/initialize"
 	"go-simple-api/internal/repository"
 	"go-simple-api/internal/usecase"
@@ -15,5 +15,5 @@ func RegisterRoutes(v1 *echo.Group, container *initialize.Container) {
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := httpDelivery.NewUserHandler(userUsecase)
 
-	httpDelivery.RegisterUserRoutes(v1, userHandler)
+	RegisterUserRoutes(v1, userHandler)
 }

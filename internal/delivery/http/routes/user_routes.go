@@ -1,8 +1,12 @@
-package http
+package routes
 
-import "github.com/labstack/echo/v4"
+import (
+	"go-simple-api/internal/delivery/http/handler"
 
-func RegisterUserRoutes(v1Group *echo.Group, handler *UserHandler) {
+	"github.com/labstack/echo/v4"
+)
+
+func RegisterUserRoutes(v1Group *echo.Group, handler *handler.UserHandler) {
 	v1Group.GET("/users", handler.GetUserList)
 	v1Group.GET("/users/:id", handler.GetUser)
 	v1Group.POST("/users", handler.CreateUser)
