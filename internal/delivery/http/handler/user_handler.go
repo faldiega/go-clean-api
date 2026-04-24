@@ -1,4 +1,4 @@
-package http
+package handler
 
 import (
 	"go-simple-api/internal/domain/entity"
