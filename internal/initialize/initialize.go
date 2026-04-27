@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"go-simple-api/internal/config"
+	"go-simple-api/internal/delivery/http/middleware"
 	"go-simple-api/internal/infrastructure/database"
 	"go-simple-api/internal/infrastructure/logger"
 
@@ -13,6 +14,7 @@ type Container struct {
 	Config            *config.Config
 	DbGolangSimpleApi *gorm.DB
 	ZapLogger         *zap.Logger
+	Auth              *middleware.JWTMiddleware
 }
 
 func NewContainer() *Container {
@@ -31,10 +33,17 @@ func NewContainer() *Container {
 		panic(err)
 	}
 
+	// Middleware
+	jwtMiddleware := middleware.NewJWTMiddleware(
+		conf.Jwt.JwtSecret,
+		conf.WhitelistURLs,
+	)
+
 	return &Container{
 		Config:            conf,
 		ZapLogger:         log,
 		DbGolangSimpleApi: db,
+		Auth:              jwtMiddleware,
 	}
 
 }

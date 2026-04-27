@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-simple-api/internal/delivery/http/middleware"
 	"go-simple-api/internal/delivery/http/routes"
 	"go-simple-api/internal/initialize"
 	"go-simple-api/pkg/common/constants"
@@ -19,10 +18,9 @@ import (
 func NewEchoApp(container *initialize.Container) *echo.Echo {
 
 	e := echo.New()
+	e.Use(container.Auth.Middleware())
 
 	api := e.Group("/api")
-	api.Use(middleware.JWTMiddleware())
-
 	v1 := api.Group("/v1")
 
 	routes.RegisterRoutes(v1, container)
@@ -51,13 +49,14 @@ func Start(container *initialize.Container) {
 		}
 	}()
 
+	log.Info("application starting")
+	log.Info("server started on port 8080")
+	log.Sync() // Force flush to ensure logs are written immediately
+
 	wait := graceful.Shutdown(context.Background(), 10*time.Second, map[string]graceful.Operation{
 		"http-server": func(ctx context.Context) error {
 			return app.Shutdown(ctx)
 		},
 	})
 	<-wait
-
-	log.Info("application starting")
-	log.Info("server started on port 8080")
 }

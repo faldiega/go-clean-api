@@ -11,6 +11,8 @@ import (
 
 func RegisterRoutes(v1 *echo.Group, container *initialize.Container) {
 
+	httpDelivery.NewAuthHandler(v1, container.Config)
+
 	userRepo := repository.NewUserRepository(container.DbGolangSimpleApi)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := httpDelivery.NewUserHandler(userUsecase)

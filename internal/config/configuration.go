@@ -1,15 +1,16 @@
 package config
 
 type Config struct {
-	AppName    string
-	AppSecret  string
-	AppHost    string
-	AppPort    string
-	AppEnv     string
-	AppVersion string
-	Database   Database
-	Logger     ZapModel
-	Jwt        Jwt
+	AppName       string
+	AppSecret     string
+	AppHost       string
+	AppPort       string
+	AppEnv        string
+	AppVersion    string
+	Database      Database
+	Logger        ZapModel
+	Jwt           Jwt
+	WhitelistURLs []string
 }
 
 type (
@@ -67,5 +68,6 @@ func LoadConfig() *Config {
 			JwtSecret:  Env("JWT_SECRET", "simplesecret"),
 			JwtExpired: Env("JWT_EXPIRE_HOURS", "24"),
 		},
+		WhitelistURLs: ParseWhitelistURLs(Env("WHITELIST_URLS", "/api/v1/auth")),
 	}
 }
