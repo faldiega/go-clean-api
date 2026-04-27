@@ -13,10 +13,9 @@ type AuthHandler struct {
 	conf *config.Config
 }
 
-func NewAuthHandler(e *echo.Echo, cfg *config.Config) {
+func NewAuthHandler(v1 *echo.Group, cfg *config.Config) {
 	handler := &AuthHandler{cfg}
-
-	e.POST("/auth", handler.Login)
+	v1.POST("/auth", handler.Login)
 }
 
 func (h *AuthHandler) Login(c echo.Context) error {

@@ -2,30 +2,52 @@ package middleware
 
 import (
 	"fmt"
-	"os"
+	"net/http"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
-func JWTMiddleware() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
+type JWTMiddleware struct {
+	jwtSecret     string
+	whitelistURLs []string
+}
 
+func NewJWTMiddleware(secret string, whitelistURLs []string) *JWTMiddleware {
+	return &JWTMiddleware{
+		jwtSecret:     secret,
+		whitelistURLs: whitelistURLs,
+	}
+}
+
+func (m *JWTMiddleware) Middleware() echo.MiddlewareFunc {
+
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 
+			requestPath := c.Request().URL.Path
+
+			// cek whitelist dulu
+			if IsUnauthorizedURL(requestPath, m.whitelistURLs) {
+				return next(c) // skip JWT, langsung lanjut
+			}
+
 			authHeader := c.Request().Header.Get("Authorization")
-
 			if authHeader == "" {
-				return c.JSON(401, "missing token")
+				return c.JSON(http.StatusUnauthorized, map[string]string{
+					"error": "missing token",
+				})
 			}
 
-			split := strings.Split(authHeader, " ")
-			if len(split) != 2 || split[0] != "Bearer" {
-				return c.JSON(401, "invalid token format")
+			parts := strings.SplitN(authHeader, " ", 2)
+			if len(parts) != 2 || parts[0] != "Bearer" {
+				return c.JSON(http.StatusUnauthorized, map[string]string{
+					"error": "invalid token format",
+				})
 			}
 
-			tokenString := split[1]
+			tokenString := parts[1]
 
 			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 				// Validasi algoritma
@@ -33,16 +55,23 @@ func JWTMiddleware() echo.MiddlewareFunc {
 					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 				}
 
-				return []byte(os.Getenv("JWT_SECRET")), nil
+				return []byte(m.jwtSecret), nil
 			})
 
 			if err != nil || !token.Valid {
-				return c.JSON(401, "invalid token")
+				return c.JSON(http.StatusUnauthorized, map[string]string{
+					"error": "invalid or expired token",
+				})
 			}
 
-			claims := token.Claims.(jwt.MapClaims)
+			claims, ok := token.Claims.(jwt.MapClaims)
+			if !ok {
+				return c.JSON(http.StatusUnauthorized, map[string]string{
+					"error": "invalid claims",
+				})
+			}
 
-			// inject ke context
+			// simpan ke context untuk dipakai di handler
 			c.Set("user_id", claims["user_id"])
 
 			return next(c)

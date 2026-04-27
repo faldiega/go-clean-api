@@ -3,6 +3,7 @@ package config
 import (
 	"go-simple-api/internal/utils"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/joho/godotenv"
@@ -51,4 +52,24 @@ func EnvAsBool(key string, defaultValue bool) bool {
 	}
 
 	return defaultValue
+}
+
+// pisahkan string "a,b,c" menjadi []string{"a", "b", "c"}
+// dan trim spasi di tiap URL
+func ParseWhitelistURLs(raw string) []string {
+	if raw == "" {
+		return []string{}
+	}
+
+	parts := strings.Split(raw, ",")
+	result := make([]string, 0, len(parts))
+
+	for _, p := range parts {
+		trimmed := strings.TrimSpace(p)
+		if trimmed != "" {
+			result = append(result, trimmed)
+		}
+	}
+
+	return result
 }
