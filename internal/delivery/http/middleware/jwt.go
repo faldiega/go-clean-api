@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"go-simple-api/pkg/common/response"
 	"net/http"
 	"strings"
 
@@ -35,16 +36,14 @@ func (m *JWTMiddleware) Middleware() echo.MiddlewareFunc {
 
 			authHeader := c.Request().Header.Get("Authorization")
 			if authHeader == "" {
-				return c.JSON(http.StatusUnauthorized, map[string]string{
-					"error": "missing token",
-				})
+				return response.SendError(c, http.StatusUnauthorized, "missing token", nil)
+
 			}
 
 			parts := strings.SplitN(authHeader, " ", 2)
 			if len(parts) != 2 || parts[0] != "Bearer" {
-				return c.JSON(http.StatusUnauthorized, map[string]string{
-					"error": "invalid token format",
-				})
+				return response.SendError(c, http.StatusUnauthorized, "invalid token format", nil)
+
 			}
 
 			tokenString := parts[1]
@@ -59,16 +58,13 @@ func (m *JWTMiddleware) Middleware() echo.MiddlewareFunc {
 			})
 
 			if err != nil || !token.Valid {
-				return c.JSON(http.StatusUnauthorized, map[string]string{
-					"error": "invalid or expired token",
-				})
+				return response.SendError(c, http.StatusUnauthorized, "invalid or expired token", nil)
+
 			}
 
 			claims, ok := token.Claims.(jwt.MapClaims)
 			if !ok {
-				return c.JSON(http.StatusUnauthorized, map[string]string{
-					"error": "invalid claims",
-				})
+				return response.SendError(c, http.StatusUnauthorized, "invalid claims", nil)
 			}
 
 			// simpan ke context untuk dipakai di handler
