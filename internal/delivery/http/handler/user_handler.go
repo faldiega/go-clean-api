@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/usecase"
-	"go-simple-api/internal/dto"
 	"net/http"
 	"strconv"
 
