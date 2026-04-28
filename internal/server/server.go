@@ -20,10 +20,7 @@ func NewEchoApp(container *initialize.Container) *echo.Echo {
 	e := echo.New()
 	e.Use(container.Auth.Middleware())
 
-	api := e.Group("/api")
-	v1 := api.Group("/v1")
-
-	routes.RegisterRoutes(v1, container)
+	routes.RegisterRoutes(e, container)
 
 	return e
 }

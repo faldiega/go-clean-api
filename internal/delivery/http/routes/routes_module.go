@@ -13,3 +13,7 @@ func RegisterUserRoutes(v1Group *echo.Group, handler *handler.UserHandler) {
 	v1Group.PUT("/users/:id", handler.UpdateUser)
 	v1Group.DELETE("/users/:id", handler.DeleteUser)
 }
+
+func RegisterAuthRoutes(v1Group *echo.Group, handler *handler.AuthHandler) {
+	v1Group.POST("/auth", handler.Login)
+}

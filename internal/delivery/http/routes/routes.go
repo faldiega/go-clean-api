@@ -9,13 +9,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func RegisterRoutes(v1 *echo.Group, container *initialize.Container) {
+func RegisterRoutes(e *echo.Echo, container *initialize.Container) {
 
-	httpDelivery.NewAuthHandler(v1, container.Config)
+	api := e.Group("/api")
+	v1 := api.Group("/v1")
+
+	authHandler := httpDelivery.NewAuthHandler(container.Config)
 
 	userRepo := repository.NewUserRepository(container.DbGolangSimpleApi)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := httpDelivery.NewUserHandler(userUsecase)
 
+	RegisterAuthRoutes(v1, authHandler)
 	RegisterUserRoutes(v1, userHandler)
 }
