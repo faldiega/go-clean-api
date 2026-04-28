@@ -46,7 +46,8 @@ func LoadConfig() *Config {
 	LoadEnv("config.env")
 
 	return &Config{
-		AppPort: Env("APP_PORT", defaultAppPort),
+		AppPort:   Env("APP_PORT", defaultAppPort),
+		AppSecret: Env("APP_SECRET", "secret"),
 		Database: Database{
 			DbGolangSimpleApi: DbConfig{
 				DBHost:     Env("DB_HOST", "localhost"),

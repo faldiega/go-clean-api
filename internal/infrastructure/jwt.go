@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"go-simple-api/internal/config"
+	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/utils"
 	"time"
 
@@ -13,7 +14,7 @@ type JWTCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID uint, cfg *config.Config) (string, error) {
+func GenerateToken(userID uint, cfg *config.Config) (*dto.Token, error) {
 
 	secret := cfg.Jwt.JwtSecret
 
@@ -25,7 +26,11 @@ func GenerateToken(userID uint, cfg *config.Config) (string, error) {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, err := rawToken.SignedString([]byte(secret))
 
-	return token.SignedString([]byte(secret))
+	return &dto.Token{
+		Token:     token,
+		ExpiredAt: claims.ExpiresAt.Time,
+	}, err
 }
