@@ -4,6 +4,7 @@ import (
 	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/usecase"
+	"go-simple-api/pkg/common/response"
 	"net/http"
 	"strconv"
 
@@ -21,47 +22,47 @@ func NewUserHandler(uc usecase.UserUsecase) *UserHandler {
 func (h *UserHandler) GetUserList(c echo.Context) error {
 	users, err := h.usecase.GetUsers()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return response.SendError(c, http.StatusInternalServerError, "failed to fetch users", err.Error())
 	}
 
-	var response []dto.UserResponse
+	var data []dto.UserResponse
 
 	for _, u := range users {
-		response = append(response, dto.UserResponse{
+		data = append(data, dto.UserResponse{
 			ID:    u.ID,
 			Name:  u.Name,
 			Email: u.Email,
 		})
 	}
 
-	return c.JSON(http.StatusOK, response)
+	return response.SendSuccess(c, http.StatusOK, "successfully", data)
 }
 
 func (h *UserHandler) GetUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, "invalid id")
+		return response.SendError(c, http.StatusBadRequest, "bad request param ID", err.Error())
 	}
 
-	user, err := h.usecase.GetUser(int(id))
+	result, err := h.usecase.GetUser(int(id))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, err)
+		return response.SendError(c, http.StatusNotFound, "user not found", err.Error())
 	}
 
-	response := dto.UserResponse{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
+	data := dto.UserResponse{
+		ID:    result.ID,
+		Name:  result.Name,
+		Email: result.Email,
 	}
 
-	return c.JSON(http.StatusOK, response)
+	return response.SendSuccess(c, http.StatusOK, "successfully", data)
 }
 
 func (h *UserHandler) CreateUser(c echo.Context) error {
 	var req dto.CreateUserRequest
 
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, "invalid request")
+		return response.SendError(c, http.StatusBadRequest, "invalid request", err.Error())
 	}
 
 	user := entity.User{
@@ -72,10 +73,11 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 
 	result, err := h.usecase.CreateUser(user)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return response.SendError(c, http.StatusInternalServerError, "create user failed", err.Error())
+
 	}
 
-	response := dto.UserResponse{
+	data := dto.UserResponse{
 		ID:          result.ID,
 		Name:        result.Name,
 		Email:       result.Email,
@@ -84,18 +86,19 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		UpdatedDate: result.UpdatedDate.String(),
 	}
 
-	return c.JSON(http.StatusCreated, response)
+	return response.SendSuccess(c, http.StatusOK, "successfully", data)
 }
 
 func (h *UserHandler) UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, "invalid id")
+		return response.SendError(c, http.StatusBadRequest, "invalid ID", err.Error())
+
 	}
 
 	var req dto.UpdateUserRequest
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, "invalid request")
+		return response.SendError(c, http.StatusBadRequest, "invalid request", err.Error())
 	}
 
 	user := entity.User{
@@ -107,10 +110,11 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 
 	result, err := h.usecase.UpdateUser(user)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return response.SendError(c, http.StatusInternalServerError, "update user failed", err.Error())
+
 	}
 
-	response := dto.UserResponse{
+	data := dto.UserResponse{
 		ID:          result.ID,
 		Name:        result.Name,
 		Email:       result.Email,
@@ -119,27 +123,26 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		UpdatedDate: result.UpdatedDate.String(),
 	}
 
-	return c.JSON(http.StatusOK, response)
+	return response.SendSuccess(c, http.StatusOK, "successfully", data)
+
 }
 
 func (h *UserHandler) DeleteUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, "invalid id")
+		return response.SendError(c, http.StatusBadRequest, "invalid ID", err.Error())
 	}
 
 	user, err := h.usecase.GetUser(int(id))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, err.Error())
+		return response.SendError(c, http.StatusNotFound, "user not found", err.Error())
 	}
 
 	err = h.usecase.DeleteUser(int(id))
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return response.SendError(c, http.StatusInternalServerError, "delete user failed", err.Error())
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": "user deleted. [" + user.Name + "]",
-	})
+	return response.SendSuccess(c, http.StatusOK, "successfully delete user. ["+user.Name+"]", nil)
 }
