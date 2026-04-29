@@ -1,13 +1,13 @@
 package dto
 
 type CreateUserRequest struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	Name  string `json:"name" validate:"required,max=50"`
+	Email string `json:"email" validate:"required"`
 }
 
 type UpdateUserRequest struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
+	Name     string `json:"name" validate:"required,max=50"`
+	Email    string `json:"email" validate:"required"`
 	IsActive bool   `json:"is_active"`
 }
 

@@ -5,6 +5,7 @@ import (
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/usecase"
 	"go-simple-api/pkg/common/response"
+	customValidator "go-simple-api/pkg/common/validator"
 	"net/http"
 	"strconv"
 
@@ -59,10 +60,13 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 }
 
 func (h *UserHandler) CreateUser(c echo.Context) error {
-	var req dto.CreateUserRequest
-
+	req := new(dto.CreateUserRequest)
 	if err := c.Bind(&req); err != nil {
 		return response.SendError(c, http.StatusBadRequest, "invalid request", err.Error())
+	}
+
+	if err := c.Validate(req); err != nil {
+		return response.SendError(c, http.StatusBadRequest, "validation failed", customValidator.FormatValidationError(err))
 	}
 
 	user := entity.User{
@@ -96,9 +100,13 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 
 	}
 
-	var req dto.UpdateUserRequest
+	req := new(dto.UpdateUserRequest)
 	if err := c.Bind(&req); err != nil {
 		return response.SendError(c, http.StatusBadRequest, "invalid request", err.Error())
+	}
+
+	if err := c.Validate(req); err != nil {
+		return response.SendError(c, http.StatusBadRequest, "validation failed", customValidator.FormatValidationError(err))
 	}
 
 	user := entity.User{
@@ -144,5 +152,5 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 		return response.SendError(c, http.StatusInternalServerError, "delete user failed", err.Error())
 	}
 
-	return response.SendSuccess(c, http.StatusOK, "successfully delete user. ["+user.Name+"]", nil)
+	return response.SendSuccess(c, http.StatusOK, "successfully", "user ["+user.Name+"] has been deleted.")
 }

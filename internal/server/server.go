@@ -8,6 +8,7 @@ import (
 	"go-simple-api/internal/initialize"
 	"go-simple-api/pkg/common/constants"
 	"go-simple-api/pkg/common/graceful"
+	"go-simple-api/pkg/common/validator"
 	"net/http"
 	"time"
 
@@ -18,7 +19,12 @@ import (
 func NewEchoApp(container *initialize.Container) *echo.Echo {
 
 	e := echo.New()
+
+	// register middleware
 	e.Use(container.Auth.Middleware())
+
+	// register custom validator
+	e.Validator = validator.GetValidator()
 
 	routes.RegisterRoutes(e, container)
 
@@ -32,7 +38,7 @@ func Start(container *initialize.Container) {
 	app := NewEchoApp(container)
 
 	srv := &http.Server{
-		Addr:              fmt.Sprintf(":%s", conf.AppPort),
+		Addr:              fmt.Sprintf(":%s", conf.App.Port),
 		Handler:           app,
 		WriteTimeout:      constants.DefaultServerWriteTimeout,
 		ReadTimeout:       constants.DefaultServerReadTimeout,

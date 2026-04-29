@@ -1,9 +1,7 @@
 package infrastructure
 
 import (
-	"go-simple-api/internal/config"
 	"go-simple-api/internal/delivery/http/dto"
-	"go-simple-api/internal/utils"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -14,14 +12,16 @@ type JWTCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID uint, cfg *config.Config) (*dto.Token, error) {
+func GenerateToken(secret string, expireHours int) (*dto.Token, error) {
 
-	secret := cfg.Jwt.JwtSecret
+	// nanti ini diganti pakai request body / validasi DB
+	userID := uint(1)
+	// secret := cfg.Jwt.JwtSecret
 
 	claims := &JWTCustomClaims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(utils.StringToInt(cfg.Jwt.JwtExpired)) * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expireHours) * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
