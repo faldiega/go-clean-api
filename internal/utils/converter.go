@@ -26,3 +26,12 @@ func StringToBool(s string) bool {
 
 	return result
 }
+
+// parse string ke int positif, return default jika invalid
+func ParsePositiveInt(s string, defaultVal int) int {
+	val, err := strconv.Atoi(s)
+	if err != nil || val < 1 {
+		return defaultVal
+	}
+	return val
+}
