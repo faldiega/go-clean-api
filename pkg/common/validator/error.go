@@ -1,25 +1,24 @@
 package validator
 
 import (
+	"go-simple-api/internal/delivery/http/dto"
+
 	"github.com/go-playground/validator/v10"
 )
 
-// FormatValidationError — ubah error validator jadi map yang readable
-func FormatValidationError(err error) map[string]string {
-	errors := make(map[string]string)
-
-	validationErrors, ok := err.(validator.ValidationErrors)
-	if !ok {
-		errors["error"] = err.Error()
-		return errors
-	}
+// FormatValidationError — ubah error validator jadi list object
+func FormatValidationError(err error) []dto.ObjectError {
+	errData := []dto.ObjectError{}
+	validationErrors := err.(validator.ValidationErrors)
 
 	for _, e := range validationErrors {
-		field := e.Field()
-		errors[field] = buildErrorMessage(e)
+		errData = append(errData, dto.ObjectError{
+			Field:   e.Field(),
+			Message: buildErrorMessage(e),
+		})
 	}
 
-	return errors
+	return errData
 }
 
 func buildErrorMessage(e validator.FieldError) string {

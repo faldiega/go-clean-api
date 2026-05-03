@@ -8,6 +8,7 @@ import (
 	customValidator "go-simple-api/pkg/common/validator"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -30,9 +31,19 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 
 	for _, u := range users {
 		data = append(data, dto.UserResponse{
-			ID:    u.ID,
-			Name:  u.Name,
-			Email: u.Email,
+			ID:          u.ID,
+			Name:        u.Name,
+			Email:       u.Email,
+			IsActive:    u.IsActive,
+			CreatedDate: u.CreatedDate.Format(time.DateTime),
+			UpdatedDate: func() *string {
+				if u.UpdatedDate != nil {
+					date := u.UpdatedDate.Format(time.DateTime)
+					return &date
+				}
+
+				return nil
+			}(),
 		})
 	}
 
@@ -51,9 +62,15 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 	}
 
 	data := dto.UserResponse{
-		ID:    result.ID,
-		Name:  result.Name,
-		Email: result.Email,
+		ID:          result.ID,
+		Name:        result.Name,
+		Email:       result.Email,
+		IsActive:    result.IsActive,
+		CreatedDate: result.CreatedDate.Format(time.DateTime),
+		UpdatedDate: func() *string {
+			date := result.UpdatedDate.Format(time.DateTime)
+			return &date
+		}(),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
@@ -86,8 +103,7 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: result.CreatedDate.String(),
-		UpdatedDate: result.UpdatedDate.String(),
+		CreatedDate: result.CreatedDate.Format(time.DateTime),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
@@ -127,9 +143,11 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: result.CreatedDate.String(),
-		UpdatedDate: result.UpdatedDate.String(),
-	}
+		CreatedDate: result.CreatedDate.Format(time.DateTime),
+		UpdatedDate: func() *string {
+			date := result.UpdatedDate.Format(time.DateTime)
+			return &date
+		}()}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
 
