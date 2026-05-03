@@ -3,6 +3,7 @@ package repository
 import (
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/repository"
+	"go-simple-api/pkg/common/pagination"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,12 +17,25 @@ func NewUserRepository(db *gorm.DB) repository.UserRepository {
 	return &userRepository{db}
 }
 
-func (r *userRepository) FindAll() ([]entity.User, error) {
+func (r *userRepository) FindAll(p pagination.Pagination) ([]entity.User, int, error) {
 	var users []entity.User
+	var totalItems int64
 
-	err := r.db.Where("is_active = ?", true).Find(&users).Error
+	// hitung total dulu
+	if err := r.db.Model(&entity.User{}).Count(&totalItems).Error; err != nil {
+		return nil, 0, err
+	}
 
-	return users, err
+	// query dengan limit & offset
+	if err := r.db.
+		Limit(p.Limit).
+		Offset(p.Offset()).
+		Where("is_active = ?", true).
+		Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return users, int(totalItems), nil
 }
 
 func (r *userRepository) FindByID(id int) (entity.User, error) {

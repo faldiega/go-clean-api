@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"go-simple-api/internal/config"
 	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/usecase"
+	"go-simple-api/pkg/common/pagination"
 	"go-simple-api/pkg/common/response"
 	customValidator "go-simple-api/pkg/common/validator"
 	"net/http"
@@ -15,14 +17,25 @@ import (
 
 type UserHandler struct {
 	usecase usecase.UserUsecase
+	config  *config.Config
 }
 
-func NewUserHandler(uc usecase.UserUsecase) *UserHandler {
-	return &UserHandler{uc}
+func NewUserHandler(uc usecase.UserUsecase, cfg *config.Config) *UserHandler {
+	return &UserHandler{usecase: uc, config: cfg}
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {
-	users, err := h.usecase.GetUsers()
+
+	// users, err := h.usecase.GetUsers()
+
+	defaultPage := h.config.Pagination.DefaultPage
+	defaultLimit := h.config.Pagination.DefaultLimit
+
+	// 1. ambil pagination dari query param
+	p := pagination.GetPaginationFromCtx(c, defaultPage, defaultLimit)
+
+	// 2. ambil data dari usecase
+	users, totalItems, err := h.usecase.GetUsers(p)
 	if err != nil {
 		return response.SendError(c, http.StatusInternalServerError, "failed to fetch users", err.Error())
 	}
@@ -47,7 +60,10 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 		})
 	}
 
-	return response.SendSuccess(c, http.StatusOK, "successfully", data)
+	// 3. build hasil paging
+	result := pagination.BuildResult(data, p, totalItems)
+
+	return response.SendSuccess(c, http.StatusOK, "successfully", result)
 }
 
 func (h *UserHandler) GetUser(c echo.Context) error {

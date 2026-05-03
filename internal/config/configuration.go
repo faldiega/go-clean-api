@@ -6,6 +6,7 @@ type Config struct {
 	Logger        ZapModel
 	Jwt           Jwt
 	WhitelistURLs []string
+	Pagination    Pagination
 }
 
 type App struct {
@@ -45,6 +46,11 @@ type Jwt struct {
 	Expired int
 }
 
+type Pagination struct {
+	DefaultPage  int
+	DefaultLimit int
+}
+
 func LoadConfig() *Config {
 
 	LoadEnv("config.env")
@@ -76,5 +82,9 @@ func LoadConfig() *Config {
 			Expired: EnvAsInt("JWT_EXPIRE_HOURS", 24),
 		},
 		WhitelistURLs: ParseWhitelistURLs(Env("WHITELIST_URLS", "/api/v1/auth")),
+		Pagination: Pagination{
+			DefaultPage:  EnvAsInt("PAGINATION_DEFAULT_PAGE", 1),
+			DefaultLimit: EnvAsInt("PAGINATION_DEFAULT_LIMIT", 10),
+		},
 	}
 }

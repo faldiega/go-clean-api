@@ -4,6 +4,7 @@ import (
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/repository"
 	"go-simple-api/internal/domain/usecase"
+	"go-simple-api/pkg/common/pagination"
 )
 
 type userUsecase struct {
@@ -14,8 +15,8 @@ func NewUserUsecase(r repository.UserRepository) usecase.UserUsecase {
 	return &userUsecase{r}
 }
 
-func (u *userUsecase) GetUsers() ([]entity.User, error) {
-	return u.repo.FindAll()
+func (u *userUsecase) GetUsers(p pagination.Pagination) ([]entity.User, int, error) {
+	return u.repo.FindAll(p)
 }
 
 func (u *userUsecase) GetUser(id int) (entity.User, error) {
