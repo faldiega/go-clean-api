@@ -1,16 +1,20 @@
 package config
 
 type Config struct {
-	AppName       string
-	AppSecret     string
-	AppHost       string
-	AppPort       string
-	AppEnv        string
-	AppVersion    string
+	App           App
 	Database      Database
 	Logger        ZapModel
 	Jwt           Jwt
 	WhitelistURLs []string
+}
+
+type App struct {
+	Name    string
+	Secret  string
+	Host    string
+	Port    string
+	Env     string
+	Version string
 }
 
 type (
@@ -37,8 +41,8 @@ type ZapModel struct {
 }
 
 type Jwt struct {
-	JwtSecret  string
-	JwtExpired string
+	Secret  string
+	Expired int
 }
 
 func LoadConfig() *Config {
@@ -46,8 +50,10 @@ func LoadConfig() *Config {
 	LoadEnv("config.env")
 
 	return &Config{
-		AppPort:   Env("APP_PORT", defaultAppPort),
-		AppSecret: Env("APP_SECRET", "secret"),
+		App: App{
+			Port:   Env("APP_PORT", defaultAppPort),
+			Secret: Env("APP_SECRET", "secret"),
+		},
 		Database: Database{
 			DbGolangSimpleApi: DbConfig{
 				DBHost:     Env("DB_HOST", "localhost"),
@@ -66,8 +72,8 @@ func LoadConfig() *Config {
 			LogCompress:   EnvAsBool("LOG_COMPRESS", true),
 		},
 		Jwt: Jwt{
-			JwtSecret:  Env("JWT_SECRET", "simplesecret"),
-			JwtExpired: Env("JWT_EXPIRE_HOURS", "24"),
+			Secret:  Env("JWT_SECRET", "simplesecret"),
+			Expired: EnvAsInt("JWT_EXPIRE_HOURS", 24),
 		},
 		WhitelistURLs: ParseWhitelistURLs(Env("WHITELIST_URLS", "/api/v1/auth")),
 	}

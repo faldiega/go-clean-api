@@ -36,13 +36,13 @@ func (m *JWTMiddleware) Middleware() echo.MiddlewareFunc {
 
 			authHeader := c.Request().Header.Get("Authorization")
 			if authHeader == "" {
-				return response.SendError(c, http.StatusUnauthorized, "missing token", nil)
+				return response.SendError(c, http.StatusUnauthorized, "unauthorized", "missing token")
 
 			}
 
 			parts := strings.SplitN(authHeader, " ", 2)
 			if len(parts) != 2 || parts[0] != "Bearer" {
-				return response.SendError(c, http.StatusUnauthorized, "invalid token format", nil)
+				return response.SendError(c, http.StatusUnauthorized, "unauthorized", "invalid token format")
 
 			}
 
@@ -58,13 +58,13 @@ func (m *JWTMiddleware) Middleware() echo.MiddlewareFunc {
 			})
 
 			if err != nil || !token.Valid {
-				return response.SendError(c, http.StatusUnauthorized, "invalid or expired token", nil)
+				return response.SendError(c, http.StatusUnauthorized, "unauthorized", "invalid or expired token")
 
 			}
 
 			claims, ok := token.Claims.(jwt.MapClaims)
 			if !ok {
-				return response.SendError(c, http.StatusUnauthorized, "invalid claims", nil)
+				return response.SendError(c, http.StatusUnauthorized, "unauthorized", "invalid claims")
 			}
 
 			// simpan ke context untuk dipakai di handler

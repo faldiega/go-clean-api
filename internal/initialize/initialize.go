@@ -35,7 +35,7 @@ func NewContainer() *Container {
 
 	// Middleware
 	jwtMiddleware := middleware.NewJWTMiddleware(
-		conf.Jwt.JwtSecret,
+		conf.Jwt.Secret,
 		conf.WhitelistURLs,
 	)
 

@@ -38,16 +38,15 @@ func (r *userRepository) Create(user entity.User) (entity.User, error) {
 		Email:       user.Email,
 		IsActive:    user.IsActive,
 		CreatedDate: time.Now(),
-		UpdatedDate: time.Now(),
 	}
-
 	err := r.db.Create(&user).Error
 
 	return user, err
 }
 
 func (r *userRepository) Update(user entity.User) (entity.User, error) {
-	user.UpdatedDate = time.Now()
+	updatedDate := time.Now()
+	user.UpdatedDate = &updatedDate
 
 	err := r.db.
 		Model(&entity.User{}).

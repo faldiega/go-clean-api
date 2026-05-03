@@ -7,43 +7,50 @@ import (
 	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/infrastructure"
 	"go-simple-api/pkg/common/response"
+	customValidator "go-simple-api/pkg/common/validator"
 
 	"github.com/labstack/echo/v4"
 )
 
 type AuthHandler struct {
-	conf *config.Config
+	apiKey    string
+	jwtSecret string
+	jwtExpire int
 }
 
 func NewAuthHandler(cfg *config.Config) *AuthHandler {
-	return &AuthHandler{cfg}
+	return &AuthHandler{
+		apiKey:    cfg.App.Secret,
+		jwtSecret: cfg.Jwt.Secret,
+		jwtExpire: cfg.Jwt.Expired,
+	}
 }
 
 func (h *AuthHandler) Login(c echo.Context) error {
 
-	// nanti ini diganti pakai request body / validasi DB
-	userID := uint(1)
-
-	key := h.conf.AppSecret
-
-	var req dto.TokenRequest
+	req := new(dto.TokenRequest)
 	if err := c.Bind(&req); err != nil {
 		return response.SendError(c, http.StatusBadRequest, "invalid request", err.Error())
 	}
 
-	if req.ApiKey != key {
-		return response.SendError(c, http.StatusUnauthorized, "you don't have access to this API", error.Error(echo.ErrUnauthorized))
+	if err := c.Validate(req); err != nil {
+		return response.SendError(c, http.StatusBadRequest, "validation failed", customValidator.FormatValidationError(err))
 	}
 
-	data, err := infrastructure.GenerateToken(userID, h.conf)
+	if req.ApiKey != h.apiKey {
+		return response.SendError(c, http.StatusUnauthorized, "unauthorized", "you don't have access to this API")
+	}
+
+	data, err := infrastructure.GenerateToken(h.jwtSecret, h.jwtExpire)
 	if err != nil {
 		return response.SendError(c, http.StatusInternalServerError, "failed generate token", err.Error())
 	}
 
 	result := dto.TokenResponse{
-		Token:     data.Token,
-		Type:      "Bearer",
-		ExpiredAt: data.ExpiredAt,
+		Token:       data.Token,
+		Type:        "Bearer",
+		ExpireHours: h.jwtExpire,
+		ExpiredAt:   data.ExpiredAt,
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", result)
