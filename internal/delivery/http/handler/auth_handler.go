@@ -6,6 +6,7 @@ import (
 	"go-simple-api/internal/config"
 	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/infrastructure"
+	"go-simple-api/internal/utils"
 	"go-simple-api/pkg/common/response"
 	customValidator "go-simple-api/pkg/common/validator"
 
@@ -50,7 +51,7 @@ func (h *AuthHandler) Login(c echo.Context) error {
 		Token:       data.Token,
 		Type:        "Bearer",
 		ExpireHours: h.jwtExpire,
-		ExpiredAt:   data.ExpiredAt,
+		ExpiredAt:   utils.ToDatetime(data.ExpiredAt),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", result)

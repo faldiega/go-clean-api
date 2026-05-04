@@ -13,12 +13,13 @@ func RegisterRoutes(e *echo.Echo, container *initialize.Container) {
 
 	api := e.Group("/api")
 	v1 := api.Group("/v1")
+	conf := container.Config
 
-	authHandler := httpDelivery.NewAuthHandler(container.Config)
+	authHandler := httpDelivery.NewAuthHandler(conf)
 
 	userRepo := repository.NewUserRepository(container.DbGolangSimpleApi)
 	userUsecase := usecase.NewUserUsecase(userRepo)
-	userHandler := httpDelivery.NewUserHandler(userUsecase)
+	userHandler := httpDelivery.NewUserHandler(userUsecase, conf)
 
 	RegisterAuthRoutes(v1, authHandler)
 	RegisterUserRoutes(v1, userHandler)

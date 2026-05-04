@@ -12,8 +12,8 @@ type TokenRequest struct {
 }
 
 type TokenResponse struct {
-	Token       string    `json:"token"`
-	Type        string    `json:"type"`
-	ExpireHours int       `json:"expire_hour"`
-	ExpiredAt   time.Time `json:"expired_at"`
+	Token       string `json:"token"`
+	Type        string `json:"type"`
+	ExpireHours int    `json:"expire_hour"`
+	ExpiredAt   string `json:"expired_at"`
 }
