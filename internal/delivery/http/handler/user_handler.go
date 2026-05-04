@@ -5,12 +5,12 @@ import (
 	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/usecase"
+	"go-simple-api/internal/utils"
 	"go-simple-api/pkg/common/pagination"
 	"go-simple-api/pkg/common/response"
 	customValidator "go-simple-api/pkg/common/validator"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -25,8 +25,6 @@ func NewUserHandler(uc usecase.UserUsecase, cfg *config.Config) *UserHandler {
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {
-
-	// users, err := h.usecase.GetUsers()
 
 	defaultPage := h.config.Pagination.DefaultPage
 	defaultLimit := h.config.Pagination.DefaultLimit
@@ -48,15 +46,8 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 			Name:        u.Name,
 			Email:       u.Email,
 			IsActive:    u.IsActive,
-			CreatedDate: u.CreatedDate.Format(time.DateTime),
-			UpdatedDate: func() *string {
-				if u.UpdatedDate != nil {
-					date := u.UpdatedDate.Format(time.DateTime)
-					return &date
-				}
-
-				return nil
-			}(),
+			CreatedDate: utils.ToDatetime(u.CreatedDate),
+			UpdatedDate: utils.ToDatetimeNullable(u.UpdatedDate),
 		})
 	}
 
@@ -82,11 +73,8 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: result.CreatedDate.Format(time.DateTime),
-		UpdatedDate: func() *string {
-			date := result.UpdatedDate.Format(time.DateTime)
-			return &date
-		}(),
+		CreatedDate: utils.ToDatetime(result.CreatedDate),
+		UpdatedDate: utils.ToDatetimeNullable(result.UpdatedDate),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
@@ -119,7 +107,7 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: result.CreatedDate.Format(time.DateTime),
+		CreatedDate: utils.ToDatetime(result.CreatedDate),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
@@ -151,7 +139,6 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 	result, err := h.usecase.UpdateUser(user)
 	if err != nil {
 		return response.SendError(c, http.StatusInternalServerError, "update user failed", err.Error())
-
 	}
 
 	data := dto.UserResponse{
@@ -159,14 +146,11 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: result.CreatedDate.Format(time.DateTime),
-		UpdatedDate: func() *string {
-			date := result.UpdatedDate.Format(time.DateTime)
-			return &date
-		}()}
+		CreatedDate: utils.ToDatetime(result.CreatedDate),
+		UpdatedDate: utils.ToDatetimeNullable(result.UpdatedDate),
+	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
-
 }
 
 func (h *UserHandler) DeleteUser(c echo.Context) error {
