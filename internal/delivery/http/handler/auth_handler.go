@@ -51,7 +51,7 @@ func (h *AuthHandler) Login(c echo.Context) error {
 		Token:       data.Token,
 		Type:        "Bearer",
 		ExpireHours: h.jwtExpire,
-		ExpiredAt:   utils.ToDatetime(data.ExpiredAt),
+		ExpiredAt:   *utils.ToDatetime(data.ExpiredAt),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", result)

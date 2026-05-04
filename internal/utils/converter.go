@@ -37,17 +37,26 @@ func ParsePositiveInt(s string, defaultVal int) int {
 	return val
 }
 
-// format datetime dd-MM-yyyy hh:mm:ss
-func ToDatetime(date time.Time) string {
-	return date.Format(time.DateTime)
-}
+func ToDatetime(date any, args ...string) *string {
+	format := time.DateTime // nilai default
+	var result time.Time
 
-// format datetime dd-MM-yyyy hh:mm:ss untuk nullable value
-func ToDatetimeNullable(date *time.Time) *string {
-	if date == nil {
+	switch val := date.(type) {
+	case time.Time:
+		result = val
+	case *time.Time:
+		if val == nil {
+			return nil
+		}
+		result = *val
+	default:
 		return nil
 	}
 
-	formatted := date.Format(time.DateTime)
+	if len(args) > 0 {
+		format = args[0]
+	}
+
+	formatted := result.Format(format)
 	return &formatted
 }
