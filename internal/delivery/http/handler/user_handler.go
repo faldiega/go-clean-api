@@ -46,8 +46,8 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 			Name:        u.Name,
 			Email:       u.Email,
 			IsActive:    u.IsActive,
-			CreatedDate: utils.ToDatetime(u.CreatedDate),
-			UpdatedDate: utils.ToDatetimeNullable(u.UpdatedDate),
+			CreatedDate: *utils.ToDatetime(u.CreatedDate),
+			UpdatedDate: utils.ToDatetime(u.UpdatedDate),
 		})
 	}
 
@@ -73,8 +73,8 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: utils.ToDatetime(result.CreatedDate),
-		UpdatedDate: utils.ToDatetimeNullable(result.UpdatedDate),
+		CreatedDate: *utils.ToDatetime(result.CreatedDate),
+		UpdatedDate: utils.ToDatetime(result.UpdatedDate),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
@@ -107,7 +107,7 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: utils.ToDatetime(result.CreatedDate),
+		CreatedDate: *utils.ToDatetime(result.CreatedDate),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
@@ -146,8 +146,8 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
-		CreatedDate: utils.ToDatetime(result.CreatedDate),
-		UpdatedDate: utils.ToDatetimeNullable(result.UpdatedDate),
+		CreatedDate: *utils.ToDatetime(result.CreatedDate),
+		UpdatedDate: utils.ToDatetime(result.UpdatedDate),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
