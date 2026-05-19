@@ -20,11 +20,16 @@ func NewEchoApp(container *initialize.Container) *echo.Echo {
 
 	e := echo.New()
 
-	// register middleware
-	e.Use(container.Auth.Middleware())
+	// hide default Echo banner & error handler
+	e.HideBanner = true
+	e.HidePort = true
 
 	// register custom validator
 	e.Validator = validator.GetValidator()
+
+	// register middleware
+	e.Use(container.Recovery.Middleware())
+	e.Use(container.Auth.Middleware())
 
 	routes.RegisterRoutes(e, container)
 
