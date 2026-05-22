@@ -51,7 +51,7 @@ type Pagination struct {
 	DefaultLimit int
 }
 
-func LoadConfig() *Config {
+func Load() *Config {
 
 	LoadEnv("config.env")
 

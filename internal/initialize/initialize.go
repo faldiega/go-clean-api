@@ -14,14 +14,13 @@ type Container struct {
 	Config            *config.Config
 	DbGolangSimpleApi *gorm.DB
 	ZapLogger         *zap.Logger
-	Auth              *middleware.JWTMiddleware
-	Recovery          *middleware.RecoveryMiddleware
-	Trace             *middleware.TraceMiddleware
+	Middlewares       *middleware.Middlewares
 }
 
 func NewContainer() *Container {
 
-	conf := config.LoadConfig()
+	// Load configuration
+	conf := config.Load()
 
 	// Logger
 	log, err := logger.ZapLogger(conf)
@@ -35,25 +34,14 @@ func NewContainer() *Container {
 		panic(err)
 	}
 
-	// Auth Middleware
-	jwtMiddleware := middleware.NewJWTMiddleware(
-		conf.Jwt.Secret,
-		conf.WhitelistURLs,
-	)
-
-	// Recovery Middleware
-	recoveryMiddleware := middleware.NewRecoveryMiddleware(log)
-
-	// Trace Middleware
-	traceMiddleware := middleware.NewTraceMiddleware(log)
+	// Load middleware
+	middlewares := middleware.Load(conf, log)
 
 	return &Container{
 		Config:            conf,
 		ZapLogger:         log,
 		DbGolangSimpleApi: db,
-		Auth:              jwtMiddleware,
-		Recovery:          recoveryMiddleware,
-		Trace:             traceMiddleware,
+		Middlewares:       middlewares,
 	}
 
 }
