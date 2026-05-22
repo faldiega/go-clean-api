@@ -16,6 +16,7 @@ type Container struct {
 	ZapLogger         *zap.Logger
 	Auth              *middleware.JWTMiddleware
 	Recovery          *middleware.RecoveryMiddleware
+	Trace             *middleware.TraceMiddleware
 }
 
 func NewContainer() *Container {
@@ -43,12 +44,16 @@ func NewContainer() *Container {
 	// Recovery Middleware
 	recoveryMiddleware := middleware.NewRecoveryMiddleware(log)
 
+	// Trace Middleware
+	traceMiddleware := middleware.NewTraceMiddleware(log)
+
 	return &Container{
 		Config:            conf,
 		ZapLogger:         log,
 		DbGolangSimpleApi: db,
 		Auth:              jwtMiddleware,
 		Recovery:          recoveryMiddleware,
+		Trace:             traceMiddleware,
 	}
 
 }
