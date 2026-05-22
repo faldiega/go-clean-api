@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/repository"
 	"go-simple-api/pkg/common/pagination"
@@ -17,7 +18,7 @@ func NewUserRepository(db *gorm.DB) repository.UserRepository {
 	return &userRepository{db}
 }
 
-func (r *userRepository) FindAll(p pagination.Pagination) ([]entity.User, int, error) {
+func (r *userRepository) FindAll(ctx context.Context, p pagination.Pagination) ([]entity.User, int, error) {
 	var users []entity.User
 	var totalItems int64
 
@@ -38,7 +39,7 @@ func (r *userRepository) FindAll(p pagination.Pagination) ([]entity.User, int, e
 	return users, int(totalItems), nil
 }
 
-func (r *userRepository) FindByID(id int) (entity.User, error) {
+func (r *userRepository) FindByID(ctx context.Context, id int) (entity.User, error) {
 	var user entity.User
 
 	err := r.db.First(&user, id).Error
@@ -46,7 +47,7 @@ func (r *userRepository) FindByID(id int) (entity.User, error) {
 	return user, err
 }
 
-func (r *userRepository) Create(user entity.User) (entity.User, error) {
+func (r *userRepository) Create(ctx context.Context, user entity.User) (entity.User, error) {
 	user = entity.User{
 		Name:        user.Name,
 		Email:       user.Email,
@@ -58,7 +59,7 @@ func (r *userRepository) Create(user entity.User) (entity.User, error) {
 	return user, err
 }
 
-func (r *userRepository) Update(user entity.User) (entity.User, error) {
+func (r *userRepository) Update(ctx context.Context, user entity.User) (entity.User, error) {
 	updatedDate := time.Now()
 	user.UpdatedDate = &updatedDate
 
@@ -71,7 +72,7 @@ func (r *userRepository) Update(user entity.User) (entity.User, error) {
 	return user, err
 }
 
-func (r *userRepository) Delete(id int) error {
+func (r *userRepository) Delete(ctx context.Context, id int) error {
 
 	return r.db.Delete(&entity.User{}, id).Error
 }

@@ -1,14 +1,15 @@
 package usecase
 
 import (
+	"context"
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/pkg/common/pagination"
 )
 
 type UserUsecase interface {
-	GetUsers(p pagination.Pagination) ([]entity.User, int, error)
-	GetUser(id int) (entity.User, error)
-	CreateUser(user entity.User) (entity.User, error)
-	UpdateUser(user entity.User) (entity.User, error)
-	DeleteUser(id int) error
+	GetUsers(ctx context.Context, p pagination.Pagination) ([]entity.User, int, error)
+	GetUser(ctx context.Context, id int) (entity.User, error)
+	CreateUser(ctx context.Context, user entity.User) (entity.User, error)
+	UpdateUser(ctx context.Context, user entity.User) (entity.User, error)
+	DeleteUser(ctx context.Context, id int) error
 }

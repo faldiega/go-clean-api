@@ -29,6 +29,7 @@ func NewEchoApp(container *initialize.Container) *echo.Echo {
 
 	// register middleware
 	e.Use(container.Recovery.Middleware())
+	e.Use(container.Trace.Middleware())
 	e.Use(container.Auth.Middleware())
 
 	routes.RegisterRoutes(e, container)
