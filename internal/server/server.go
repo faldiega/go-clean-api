@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go-simple-api/internal/delivery/http/middleware"
 	"go-simple-api/internal/delivery/http/routes"
 	"go-simple-api/internal/initialize"
 	"go-simple-api/pkg/common/constants"
@@ -27,11 +28,10 @@ func NewEchoApp(container *initialize.Container) *echo.Echo {
 	// register custom validator
 	e.Validator = validator.GetValidator()
 
-	// register middleware
-	e.Use(container.Recovery.Middleware())
-	e.Use(container.Trace.Middleware())
-	e.Use(container.Auth.Middleware())
+	// register middlewares
+	middleware.RegisterMiddlewares(e, container.Middlewares)
 
+	// register routes
 	routes.RegisterRoutes(e, container)
 
 	return e
