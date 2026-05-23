@@ -31,6 +31,8 @@ func httpStatusToCode(httpStatus int) string {
 		return CodeForbidden
 	case 404:
 		return CodeNotFound
+	case 408:
+		return CodeRequestTimeout
 	case 409:
 		return CodeConflict
 	case 500:

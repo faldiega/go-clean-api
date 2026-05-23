@@ -8,6 +8,7 @@ const (
 	CodeUnauthorized        = "GSA-401"
 	CodeForbidden           = "GSA-403"
 	CodeNotFound            = "GSA-404"
+	CodeRequestTimeout      = "GSA-408"
 	CodeConflict            = "GSA-409"
 	CodeInternalServerError = "GSA-500"
 )
