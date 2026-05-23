@@ -16,6 +16,7 @@ type App struct {
 	Port    string
 	Env     string
 	Version string
+	Timeout int
 }
 
 type (
@@ -57,8 +58,9 @@ func Load() *Config {
 
 	return &Config{
 		App: App{
-			Port:   Env("APP_PORT", defaultAppPort),
-			Secret: Env("APP_SECRET", "secret"),
+			Port:    Env("APP_PORT", defaultAppPort),
+			Secret:  Env("APP_SECRET", "secret"),
+			Timeout: EnvAsInt("APP_TIMEOUT", 30),
 		},
 		Database: Database{
 			DbGolangSimpleApi: DbConfig{

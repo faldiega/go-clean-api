@@ -37,6 +37,10 @@ func (r *userRepository) FindAll(ctx context.Context, p pagination.Pagination) (
 		return nil, 0, err
 	}
 
+	// note: untuk test timeout
+	r.db.ConnPool.ExecContext(ctx, "SELECT pg_sleep(120)") // harus pakai context agar ketika timeout, database execution juga berhenti
+	// r.db.Exec("SELECT pg_sleep(120)") // contoh tanpa context
+
 	return users, int(totalItems), nil
 }
 
