@@ -29,6 +29,7 @@ func (r *userRepository) FindAll(ctx context.Context, p pagination.Pagination) (
 
 	// query dengan limit & offset
 	if err := r.db.
+		WithContext(ctx).
 		Limit(p.Limit).
 		Offset(p.Offset()).
 		Where("is_active = ?", true).
@@ -42,7 +43,7 @@ func (r *userRepository) FindAll(ctx context.Context, p pagination.Pagination) (
 func (r *userRepository) FindByID(ctx context.Context, id int) (entity.User, error) {
 	var user entity.User
 
-	err := r.db.First(&user, id).Error
+	err := r.db.WithContext(ctx).First(&user, id).Error
 
 	return user, err
 }
@@ -54,7 +55,7 @@ func (r *userRepository) Create(ctx context.Context, user entity.User) (entity.U
 		IsActive:    user.IsActive,
 		CreatedDate: time.Now(),
 	}
-	err := r.db.Create(&user).Error
+	err := r.db.WithContext(ctx).Create(&user).Error
 
 	return user, err
 }
@@ -64,6 +65,7 @@ func (r *userRepository) Update(ctx context.Context, user entity.User) (entity.U
 	user.UpdatedDate = &updatedDate
 
 	err := r.db.
+		WithContext(ctx).
 		Model(&entity.User{}).
 		Where("id = ?", user.ID).
 		Select("Name", "Email", "IsActive", "UpdatedDate").
