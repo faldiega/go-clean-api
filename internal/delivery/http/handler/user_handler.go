@@ -104,10 +104,12 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		return response.SendError(c, http.StatusBadRequest, "validation failed", customValidator.FormatValidationError(err))
 	}
 
+	isActive := true
+
 	user := entity.User{
-		Name:     req.Name,
-		Email:    req.Email,
-		IsActive: true,
+		Name:     &req.Name,
+		Email:    &req.Email,
+		IsActive: &isActive,
 	}
 
 	result, err := h.usecase.CreateUser(c.Request().Context(), user)
@@ -131,7 +133,6 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return response.SendError(c, http.StatusBadRequest, "invalid ID", err.Error())
-
 	}
 
 	req := new(dto.UpdateUserRequest)
@@ -143,14 +144,22 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		return response.SendError(c, http.StatusBadRequest, "validation failed", customValidator.FormatValidationError(err))
 	}
 
-	user := entity.User{
-		ID:       id,
-		Name:     req.Name,
-		Email:    req.Email,
-		IsActive: req.IsActive,
+	// convert DTO → map, hanya field yang dikirim
+	updates := utils.BuildUpdateMap(req)
+	if len(updates) == 0 {
+		return response.SendError(c, http.StatusBadRequest, "Bad Request", "no fields to update")
 	}
+	// user := entity.User{
+	// 	ID:          id,
+	// 	Name:        *req.Name,
+	// 	Email:       *req.Email,
+	// 	KtpNo:       *req.KtpNo,
+	// 	Address:     *req.Address,
+	// 	PhoneNumber: *req.PhoneNumber,
+	// 	IsActive:    *req.IsActive,
+	// }
 
-	result, err := h.usecase.UpdateUser(c.Request().Context(), user)
+	result, err := h.usecase.UpdateUser(c.Request().Context(), id, updates)
 	if err != nil {
 		return response.SendError(c, http.StatusInternalServerError, "update user failed", err.Error())
 	}
@@ -159,9 +168,10 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		ID:          result.ID,
 		Name:        result.Name,
 		Email:       result.Email,
+		KtpNo:       result.KtpNo,
+		Address:     result.Address,
+		PhoneNumber: result.PhoneNumber,
 		IsActive:    result.IsActive,
-		CreatedDate: *utils.ToDatetime(result.CreatedDate),
-		UpdatedDate: utils.ToDatetime(result.UpdatedDate),
 	}
 
 	return response.SendSuccess(c, http.StatusOK, "successfully", data)
@@ -184,5 +194,5 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 		return response.SendError(c, http.StatusInternalServerError, "delete user failed", err.Error())
 	}
 
-	return response.SendSuccess(c, http.StatusOK, "successfully", "user ["+user.Name+"] has been deleted.")
+	return response.SendSuccess(c, http.StatusOK, "successfully", "user ["+*user.Name+"] has been deleted.")
 }

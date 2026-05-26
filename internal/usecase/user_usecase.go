@@ -63,12 +63,12 @@ func (u *userUsecase) CreateUser(ctx context.Context, user entity.User) (entity.
 	return user, err
 }
 
-func (u *userUsecase) UpdateUser(ctx context.Context, user entity.User) (entity.User, error) {
+func (u *userUsecase) UpdateUser(ctx context.Context, id int, updates map[string]interface{}) (entity.User, error) {
 	logger := pkgLogger.FromContext(ctx, u.logger)
 
-	logger.Info("update user")
+	logger.Info("update user", zap.Int("id", id))
 
-	user, err := u.repo.Update(ctx, user)
+	user, err := u.repo.Update(ctx, id, updates)
 	if err != nil {
 		logger.Error("failed to update user", zap.Error(err))
 		return user, err
