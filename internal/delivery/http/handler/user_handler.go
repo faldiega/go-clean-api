@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"errors"
 	"go-simple-api/internal/config"
 	"go-simple-api/internal/delivery/http/dto"
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/usecase"
 	"go-simple-api/internal/initialize"
 	"go-simple-api/internal/utils"
+	"go-simple-api/pkg/common/constants"
 	pkgLogger "go-simple-api/pkg/common/logger"
 	"go-simple-api/pkg/common/pagination"
 	"go-simple-api/pkg/common/response"
@@ -145,21 +147,12 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 	}
 
 	// convert DTO → map, hanya field yang dikirim
-	updates := utils.BuildUpdateMap(req)
-	if len(updates) == 0 {
+	fields := utils.BuildUpdateMap(req)
+	if len(fields) == 0 {
 		return response.SendError(c, http.StatusBadRequest, "Bad Request", "no fields to update")
 	}
-	// user := entity.User{
-	// 	ID:          id,
-	// 	Name:        *req.Name,
-	// 	Email:       *req.Email,
-	// 	KtpNo:       *req.KtpNo,
-	// 	Address:     *req.Address,
-	// 	PhoneNumber: *req.PhoneNumber,
-	// 	IsActive:    *req.IsActive,
-	// }
 
-	result, err := h.usecase.UpdateUser(c.Request().Context(), id, updates)
+	result, err := h.usecase.UpdateUser(c.Request().Context(), id, fields)
 	if err != nil {
 		return response.SendError(c, http.StatusInternalServerError, "update user failed", err.Error())
 	}
@@ -183,14 +176,12 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 		return response.SendError(c, http.StatusBadRequest, "invalid ID", err.Error())
 	}
 
-	user, err := h.usecase.GetUser(c.Request().Context(), int(id))
+	user, err := h.usecase.DeleteUser(c.Request().Context(), int(id))
 	if err != nil {
-		return response.SendError(c, http.StatusNotFound, "user not found", err.Error())
-	}
+		if errors.Is(err, constants.ErrDataNotFound) {
+			return response.SendError(c, http.StatusNotFound, "user not found", err.Error())
+		}
 
-	err = h.usecase.DeleteUser(c.Request().Context(), int(id))
-
-	if err != nil {
 		return response.SendError(c, http.StatusInternalServerError, "delete user failed", err.Error())
 	}
 

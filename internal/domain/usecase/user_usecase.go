@@ -11,5 +11,5 @@ type UserUsecase interface {
 	GetUser(ctx context.Context, id int) (entity.User, error)
 	CreateUser(ctx context.Context, user entity.User) (entity.User, error)
 	UpdateUser(ctx context.Context, id int, updates map[string]interface{}) (entity.User, error)
-	DeleteUser(ctx context.Context, id int) error
+	DeleteUser(ctx context.Context, id int) (entity.User, error)
 }

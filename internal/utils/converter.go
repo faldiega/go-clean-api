@@ -63,26 +63,26 @@ func ToDatetime(date any, args ...string) *string {
 }
 
 func BuildUpdateMap(req *dto.UpdateUserRequest) map[string]interface{} {
-	updates := make(map[string]interface{})
+	fields := make(map[string]interface{})
 
 	if req.Name != nil {
-		updates["name"] = *req.Name
+		fields["name"] = *req.Name
 	}
 	if req.Email != nil {
-		updates["email"] = *req.Email
+		fields["email"] = *req.Email
 	}
 	if req.IsActive != nil {
-		updates["is_active"] = *req.IsActive
+		fields["is_active"] = *req.IsActive
 	}
 	if req.KtpNo != nil {
-		updates["ktp_no"] = *req.KtpNo
+		fields["ktp_no"] = *req.KtpNo
 	}
 	if req.Address != nil {
-		updates["address"] = *req.Address
+		fields["address"] = *req.Address
 	}
 	if req.PhoneNumber != nil {
-		updates["phone_number"] = *req.PhoneNumber
+		fields["phone_number"] = *req.PhoneNumber
 	}
 
-	return updates
+	return fields
 }

@@ -5,6 +5,7 @@ import (
 	"go-simple-api/internal/domain/entity"
 	"go-simple-api/internal/domain/repository"
 	"go-simple-api/internal/domain/usecase"
+	"go-simple-api/pkg/common/constants"
 	pkgLogger "go-simple-api/pkg/common/logger"
 	"go-simple-api/pkg/common/pagination"
 
@@ -63,12 +64,12 @@ func (u *userUsecase) CreateUser(ctx context.Context, user entity.User) (entity.
 	return user, err
 }
 
-func (u *userUsecase) UpdateUser(ctx context.Context, id int, updates map[string]interface{}) (entity.User, error) {
+func (u *userUsecase) UpdateUser(ctx context.Context, id int, fields map[string]interface{}) (entity.User, error) {
 	logger := pkgLogger.FromContext(ctx, u.logger)
 
 	logger.Info("update user", zap.Int("id", id))
 
-	user, err := u.repo.Update(ctx, id, updates)
+	user, err := u.repo.Update(ctx, id, fields)
 	if err != nil {
 		logger.Error("failed to update user", zap.Error(err))
 		return user, err
@@ -77,16 +78,23 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id int, updates map[string
 	return user, err
 }
 
-func (u *userUsecase) DeleteUser(ctx context.Context, id int) error {
+func (u *userUsecase) DeleteUser(ctx context.Context, id int) (entity.User, error) {
 	logger := pkgLogger.FromContext(ctx, u.logger)
+
+	logger.Info("find user with id: " + utils.ToString(id))
+
+	data, err := u.GetUser(ctx, id)
+	if err != nil {
+		return entity.User{}, constants.ErrDataNotFound
+	}
 
 	logger.Info("delete user with id: " + utils.ToString(id))
 
-	err := u.repo.Delete(ctx, id)
+	err = u.repo.Delete(ctx, data.ID)
 	if err != nil {
 		logger.Error("failed to delete user", zap.Error(err))
-		return err
+		return data, err
 	}
 
-	return nil
+	return data, nil
 }
