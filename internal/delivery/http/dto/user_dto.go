@@ -1,8 +1,11 @@
 package dto
 
 type CreateUserRequest struct {
-	Name  string `json:"name" validate:"required,max=50"`
-	Email string `json:"email" validate:"required"`
+	Name        *string `json:"name" validate:"required,max=50"`
+	Email       *string `json:"email" validate:"required,email,omitempty"`
+	KtpNo       *string `json:"ktp_no" validate:"omitempty,min=16,max=16"`
+	Address     *string `json:"address" validate:"omitempty,min=3"`
+	PhoneNumber *string `json:"phone_number" validate:"omitempty,min=10,max=15"`
 }
 
 type UpdateUserRequest struct {

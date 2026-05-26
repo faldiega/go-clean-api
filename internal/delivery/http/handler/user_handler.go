@@ -60,6 +60,9 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 			Name:        u.Name,
 			Email:       u.Email,
 			IsActive:    u.IsActive,
+			KtpNo:       u.KtpNo,
+			Address:     u.Address,
+			PhoneNumber: u.PhoneNumber,
 			CreatedDate: *utils.ToDatetime(u.CreatedDate),
 			UpdatedDate: utils.ToDatetime(u.UpdatedDate),
 		})
@@ -89,6 +92,9 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
+		KtpNo:       result.KtpNo,
+		Address:     result.Address,
+		PhoneNumber: result.PhoneNumber,
 		CreatedDate: *utils.ToDatetime(result.CreatedDate),
 		UpdatedDate: utils.ToDatetime(result.UpdatedDate),
 	}
@@ -109,9 +115,12 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 	isActive := true
 
 	user := entity.User{
-		Name:     &req.Name,
-		Email:    &req.Email,
-		IsActive: &isActive,
+		Name:        req.Name,
+		Email:       req.Email,
+		IsActive:    &isActive,
+		KtpNo:       req.KtpNo,
+		Address:     req.Address,
+		PhoneNumber: req.PhoneNumber,
 	}
 
 	result, err := h.usecase.CreateUser(c.Request().Context(), user)
@@ -125,6 +134,9 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		Name:        result.Name,
 		Email:       result.Email,
 		IsActive:    result.IsActive,
+		KtpNo:       result.KtpNo,
+		Address:     result.Address,
+		PhoneNumber: result.PhoneNumber,
 		CreatedDate: *utils.ToDatetime(result.CreatedDate),
 	}
 

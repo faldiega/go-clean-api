@@ -57,6 +57,9 @@ func (r *userRepository) Create(ctx context.Context, user entity.User) (entity.U
 		Name:        user.Name,
 		Email:       user.Email,
 		IsActive:    user.IsActive,
+		KtpNo:       user.KtpNo,
+		Address:     user.Address,
+		PhoneNumber: user.PhoneNumber,
 		CreatedDate: time.Now(),
 	}
 	err := r.db.WithContext(ctx).Create(&user).Error
