@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"go-simple-api/internal/delivery/http/dto"
 	"strconv"
 	"time"
 )
@@ -59,4 +60,29 @@ func ToDatetime(date any, args ...string) *string {
 
 	formatted := result.Format(format)
 	return &formatted
+}
+
+func BuildUpdateMap(req *dto.UpdateUserRequest) map[string]interface{} {
+	fields := make(map[string]interface{})
+
+	if req.Name != nil {
+		fields["name"] = *req.Name
+	}
+	if req.Email != nil {
+		fields["email"] = *req.Email
+	}
+	if req.IsActive != nil {
+		fields["is_active"] = *req.IsActive
+	}
+	if req.KtpNo != nil {
+		fields["ktp_no"] = *req.KtpNo
+	}
+	if req.Address != nil {
+		fields["address"] = *req.Address
+	}
+	if req.PhoneNumber != nil {
+		fields["phone_number"] = *req.PhoneNumber
+	}
+
+	return fields
 }

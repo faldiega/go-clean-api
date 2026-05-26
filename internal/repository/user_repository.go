@@ -23,7 +23,7 @@ func (r *userRepository) FindAll(ctx context.Context, p pagination.Pagination) (
 	var totalItems int64
 
 	// hitung total dulu
-	if err := r.db.Model(&entity.User{}).Count(&totalItems).Error; err != nil {
+	if err := r.db.Model(&entity.User{}).Where("is_active = ?", true).Count(&totalItems).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -38,7 +38,7 @@ func (r *userRepository) FindAll(ctx context.Context, p pagination.Pagination) (
 	}
 
 	// note: untuk test timeout
-	r.db.ConnPool.ExecContext(ctx, "SELECT pg_sleep(120)") // harus pakai context agar ketika timeout, database execution juga berhenti
+	// r.db.ConnPool.ExecContext(ctx, "SELECT pg_sleep(120)") // harus pakai context agar ketika timeout, database execution juga berhenti
 	// r.db.Exec("SELECT pg_sleep(120)") // contoh tanpa context
 
 	return users, int(totalItems), nil
@@ -47,7 +47,7 @@ func (r *userRepository) FindAll(ctx context.Context, p pagination.Pagination) (
 func (r *userRepository) FindByID(ctx context.Context, id int) (entity.User, error) {
 	var user entity.User
 
-	err := r.db.WithContext(ctx).First(&user, id).Error
+	err := r.db.WithContext(ctx).Where("is_active = ?", true).First(&user, id).Error
 
 	return user, err
 }
@@ -57,6 +57,9 @@ func (r *userRepository) Create(ctx context.Context, user entity.User) (entity.U
 		Name:        user.Name,
 		Email:       user.Email,
 		IsActive:    user.IsActive,
+		KtpNo:       user.KtpNo,
+		Address:     user.Address,
+		PhoneNumber: user.PhoneNumber,
 		CreatedDate: time.Now(),
 	}
 	err := r.db.WithContext(ctx).Create(&user).Error
@@ -64,18 +67,32 @@ func (r *userRepository) Create(ctx context.Context, user entity.User) (entity.U
 	return user, err
 }
 
-func (r *userRepository) Update(ctx context.Context, user entity.User) (entity.User, error) {
+func (r *userRepository) Update(ctx context.Context, id int, fields map[string]interface{}) (entity.User, error) {
 	updatedDate := time.Now()
-	user.UpdatedDate = &updatedDate
+	// user.UpdatedDate = &updatedDate
+	fields["updated_date"] = updatedDate
 
+	// update hanya field yang ada di map
 	err := r.db.
 		WithContext(ctx).
 		Model(&entity.User{}).
-		Where("id = ?", user.ID).
-		Select("Name", "Email", "IsActive", "UpdatedDate").
-		Updates(user).Error
+		Where("id = ?", id).
+		// Select("Name", "Email", "IsActive", "UpdatedDate").
+		Updates(fields).Error
 
-	return user, err
+	if err != nil {
+		return entity.User{}, err
+	}
+
+	// ambil data terbaru
+	var user entity.User
+	if err = r.db.WithContext(ctx).
+		Where("id = ?", id).
+		First(&user).Error; err != nil {
+		return entity.User{}, err
+	}
+
+	return user, nil
 }
 
 func (r *userRepository) Delete(ctx context.Context, id int) error {
