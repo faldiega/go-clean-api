@@ -83,7 +83,7 @@ func (u *userUsecase) DeleteUser(ctx context.Context, id int) (entity.User, erro
 
 	logger.Info("find user with id: " + utils.ToString(id))
 
-	data, err := u.GetUser(ctx, id)
+	data, err := u.repo.FindByID(ctx, id)
 	if err != nil {
 		return entity.User{}, constants.ErrDataNotFound
 	}
