@@ -2,15 +2,15 @@ package response
 
 // Response code constants
 const (
-	CodeOK                  = "GSA-200"
-	CodeCreated             = "GSA-201"
-	CodeBadRequest          = "GSA-400"
-	CodeUnauthorized        = "GSA-401"
-	CodeForbidden           = "GSA-403"
-	CodeNotFound            = "GSA-404"
-	CodeRequestTimeout      = "GSA-408"
-	CodeConflict            = "GSA-409"
-	CodeInternalServerError = "GSA-500"
+	CodeOK                  = "GCA-200"
+	CodeCreated             = "GCA-201"
+	CodeBadRequest          = "GCA-400"
+	CodeUnauthorized        = "GCA-401"
+	CodeForbidden           = "GCA-403"
+	CodeNotFound            = "GCA-404"
+	CodeRequestTimeout      = "GCA-408"
+	CodeConflict            = "GCA-409"
+	CodeInternalServerError = "GCA-500"
 )
 
 // Base response struct
