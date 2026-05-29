@@ -33,7 +33,7 @@ func (m *RecoveryMiddleware) Middleware() echo.MiddlewareFunc {
 						zap.String("path", c.Request().URL.Path),
 					)
 
-					// return response GSA-500 ke client
+					// return response GCA-500 ke client
 					response.SendError(c, http.StatusInternalServerError, "internal server error", "something went wrong, please try again later")
 				}
 			}()

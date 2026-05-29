@@ -16,7 +16,7 @@ func SendError(c echo.Context, httpStatus int, message string, errors any) error
 	return c.JSON(httpStatus, ResponseError(code, message, errors))
 }
 
-// mapping HTTP status → GSA code
+// mapping HTTP status → GCA code
 func httpStatusToCode(httpStatus int) string {
 	switch httpStatus {
 	case 200:
@@ -38,6 +38,6 @@ func httpStatusToCode(httpStatus int) string {
 	case 500:
 		return CodeInternalServerError
 	default:
-		return "GSA-" + string(rune(httpStatus))
+		return "GCA-" + string(rune(httpStatus))
 	}
 }

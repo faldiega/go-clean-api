@@ -68,7 +68,7 @@ func Load() *Config {
 				DBPort:     Env("DB_PORT", "5432"),
 				DBUser:     Env("DB_USER", "postgres"),
 				DBPassword: Env("DB_PASSWORD", "postgres"),
-				DBName:     Env("DB_NAME", "gosimpleapi"),
+				DBName:     Env("DB_NAME", "gocleanapi"),
 				DBSSLMode:  Env("DB_SSLMODE", "disable"),
 			},
 		},
