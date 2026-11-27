@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"go-simple-api/internal/delivery/http/dto"
+	"go-clean-api/internal/delivery/http/dto"
 	"strconv"
 	"time"
 )

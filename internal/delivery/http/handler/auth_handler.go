@@ -3,12 +3,12 @@ package handler
 import (
 	"net/http"
 
-	"go-simple-api/internal/config"
-	"go-simple-api/internal/delivery/http/dto"
-	"go-simple-api/internal/infrastructure"
-	"go-simple-api/internal/utils"
-	"go-simple-api/pkg/common/response"
-	customValidator "go-simple-api/pkg/common/validator"
+	"go-clean-api/internal/config"
+	"go-clean-api/internal/delivery/http/dto"
+	"go-clean-api/internal/infrastructure"
+	"go-clean-api/internal/utils"
+	"go-clean-api/pkg/common/response"
+	customValidator "go-clean-api/pkg/common/validator"
 
 	"github.com/labstack/echo/v4"
 )

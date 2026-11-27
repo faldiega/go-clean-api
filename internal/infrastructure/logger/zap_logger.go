@@ -2,7 +2,7 @@ package logger
 
 import (
 	"fmt"
-	"go-simple-api/internal/config"
+	"go-clean-api/internal/config"
 	"os"
 
 	"go.uber.org/zap"

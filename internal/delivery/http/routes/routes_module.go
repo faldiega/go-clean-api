@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"go-simple-api/internal/delivery/http/handler"
+	"go-clean-api/internal/delivery/http/handler"
 
 	"github.com/labstack/echo/v4"
 )

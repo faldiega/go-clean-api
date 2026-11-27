@@ -2,7 +2,7 @@ package logger
 
 import (
 	"context"
-	"go-simple-api/pkg/common/constants"
+	"go-clean-api/pkg/common/constants"
 
 	"go.uber.org/zap"
 )

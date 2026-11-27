@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-simple-api/internal/config"
+	"go-clean-api/internal/config"
 	"time"
 
 	"github.com/labstack/echo/v4"

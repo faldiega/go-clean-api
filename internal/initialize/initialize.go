@@ -1,10 +1,10 @@
 package initialize
 
 import (
-	"go-simple-api/internal/config"
-	"go-simple-api/internal/delivery/http/middleware"
-	"go-simple-api/internal/infrastructure/database"
-	"go-simple-api/internal/infrastructure/logger"
+	"go-clean-api/internal/config"
+	"go-clean-api/internal/delivery/http/middleware"
+	"go-clean-api/internal/infrastructure/database"
+	"go-clean-api/internal/infrastructure/logger"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"

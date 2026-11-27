@@ -1,4 +1,4 @@
-module go-simple-api
+module go-clean-api
 
 go 1.25.0
 

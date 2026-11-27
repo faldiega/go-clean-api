@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"context"
-	"go-simple-api/pkg/common/response"
+	"go-clean-api/pkg/common/response"
 	"net/http"
 	"time"
 

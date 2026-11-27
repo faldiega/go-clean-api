@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"go-simple-api/internal/domain/entity"
-	"go-simple-api/internal/domain/repository"
-	"go-simple-api/pkg/common/pagination"
+	"go-clean-api/internal/domain/entity"
+	"go-clean-api/internal/domain/repository"
+	"go-clean-api/pkg/common/pagination"
 	"time"
 
 	"gorm.io/gorm"

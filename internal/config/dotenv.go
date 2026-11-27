@@ -1,7 +1,7 @@
 package config
 
 import (
-	"go-simple-api/internal/utils"
+	"go-clean-api/internal/utils"
 	"os"
 	"strings"
 	"sync"

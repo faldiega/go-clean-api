@@ -1,10 +1,10 @@
 package routes
 
 import (
-	httpDelivery "go-simple-api/internal/delivery/http/handler"
-	"go-simple-api/internal/initialize"
-	"go-simple-api/internal/repository"
-	"go-simple-api/internal/usecase"
+	httpDelivery "go-clean-api/internal/delivery/http/handler"
+	"go-clean-api/internal/initialize"
+	"go-clean-api/internal/repository"
+	"go-clean-api/internal/usecase"
 
 	"github.com/labstack/echo/v4"
 )

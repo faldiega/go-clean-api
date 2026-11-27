@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"go-simple-api/internal/domain/entity"
-	domain "go-simple-api/internal/domain/entity"
-	"go-simple-api/pkg/common/pagination"
+	"go-clean-api/internal/domain/entity"
+	domain "go-clean-api/internal/domain/entity"
+	"go-clean-api/pkg/common/pagination"
 )
 
 type UserRepository interface {
