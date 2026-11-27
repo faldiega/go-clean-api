@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"go-clean-api/internal/utils"
 	"os"
 	"strings"
@@ -20,7 +21,13 @@ func LoadEnv(file string) {
 			file = defaultConfigFile
 		}
 		if err := godotenv.Load(file); err != nil {
-			log.Fatalf("Error loading %s file", file)
+			// File tidak ada = normal di container; pakai environment variable dari OS
+			if errors.Is(err, os.ErrNotExist) {
+				log.Warnf("%s not found, using OS environment variables", file)
+				return
+			}
+			// File ada tapi isinya rusak = error sungguhan
+			log.Fatalf("Error loading %s file: %v", file, err)
 		}
 	})
 }
