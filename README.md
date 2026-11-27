@@ -2,7 +2,7 @@
 Learn golang from the scratch, step by step, with Echo framework and Clean Architecture.
 
 ```
-golang-simple-api
+go-clean-api
 ├─ cmd
 │  └─ api
 │     └─ main.go

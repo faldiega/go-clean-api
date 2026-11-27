@@ -11,10 +11,10 @@ import (
 )
 
 type Container struct {
-	Config            *config.Config
-	DbGolangSimpleApi *gorm.DB
-	ZapLogger         *zap.Logger
-	Middlewares       *middleware.Middlewares
+	Config           *config.Config
+	DbGolangCleanApi *gorm.DB
+	ZapLogger        *zap.Logger
+	Middlewares      *middleware.Middlewares
 }
 
 func NewContainer() *Container {
@@ -38,10 +38,10 @@ func NewContainer() *Container {
 	middlewares := middleware.Load(conf, log)
 
 	return &Container{
-		Config:            conf,
-		ZapLogger:         log,
-		DbGolangSimpleApi: db,
-		Middlewares:       middlewares,
+		Config:           conf,
+		ZapLogger:        log,
+		DbGolangCleanApi: db,
+		Middlewares:      middlewares,
 	}
 
 }

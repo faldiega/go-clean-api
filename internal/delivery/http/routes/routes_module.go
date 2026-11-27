@@ -17,3 +17,9 @@ func RegisterUserRoutes(v1Group *echo.Group, handler *handler.UserHandler) {
 func RegisterAuthRoutes(v1Group *echo.Group, handler *handler.AuthHandler) {
 	v1Group.POST("/auth", handler.Login)
 }
+
+func RegisterHealthRoutes(v1Group *echo.Group, h *handler.HealthHandler) {
+	v1Group.GET("/health", h.Liveness) // alias untuk liveness
+	v1Group.GET("/health/live", h.Liveness)
+	v1Group.GET("/health/ready", h.Readiness)
+}
