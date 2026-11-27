@@ -1,10 +1,11 @@
 package routes
 
 import (
-	httpDelivery "go-simple-api/internal/delivery/http/handler"
-	"go-simple-api/internal/initialize"
-	"go-simple-api/internal/repository"
-	"go-simple-api/internal/usecase"
+	"go-clean-api/internal/delivery/http/handler"
+	httpDelivery "go-clean-api/internal/delivery/http/handler"
+	"go-clean-api/internal/initialize"
+	"go-clean-api/internal/repository"
+	"go-clean-api/internal/usecase"
 
 	"github.com/labstack/echo/v4"
 )
@@ -18,10 +19,15 @@ func RegisterRoutes(e *echo.Echo, container *initialize.Container) {
 
 	authHandler := httpDelivery.NewAuthHandler(conf)
 
-	userRepo := repository.NewUserRepository(container.DbGolangSimpleApi)
+	userRepo := repository.NewUserRepository(container.DbGolangCleanApi)
 	userUsecase := usecase.NewUserUsecase(userRepo, logger)
 	userHandler := httpDelivery.NewUserHandler(userUsecase, container)
 
+	healthRepo := repository.NewHealthRepository(container.DbGolangCleanApi) // db: *sql.DB
+	healthUC := usecase.NewHealthUsecase(healthRepo, logger)
+	healthHandler := handler.NewHealthHandler(healthUC)
+
 	RegisterAuthRoutes(v1, authHandler)
 	RegisterUserRoutes(v1, userHandler)
+	RegisterHealthRoutes(v1, healthHandler)
 }

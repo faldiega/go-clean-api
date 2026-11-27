@@ -1,7 +1,7 @@
 package pagination
 
 import (
-	"go-simple-api/internal/utils"
+	"go-clean-api/internal/utils"
 	"math"
 
 	"github.com/labstack/echo/v4"

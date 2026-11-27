@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-simple-api/internal/initialize"
-	"go-simple-api/internal/server"
+	"go-clean-api/internal/initialize"
+	"go-clean-api/internal/server"
 )
 
 func main() {

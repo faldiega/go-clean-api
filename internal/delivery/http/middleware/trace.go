@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"go-simple-api/pkg/common/constants"
-	pkgLogger "go-simple-api/pkg/common/logger"
+	"go-clean-api/pkg/common/constants"
+	pkgLogger "go-clean-api/pkg/common/logger"
 	"time"
 
 	"github.com/google/uuid"

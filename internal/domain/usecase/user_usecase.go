@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"go-simple-api/internal/domain/entity"
-	"go-simple-api/pkg/common/pagination"
+	"go-clean-api/internal/domain/entity"
+	"go-clean-api/pkg/common/pagination"
 )
 
 type UserUsecase interface {

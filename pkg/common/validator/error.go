@@ -1,7 +1,7 @@
 package validator
 
 import (
-	"go-simple-api/internal/delivery/http/dto"
+	"go-clean-api/internal/delivery/http/dto"
 
 	"github.com/go-playground/validator/v10"
 )

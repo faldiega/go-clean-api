@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"go-simple-api/internal/config"
+	"go-clean-api/internal/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

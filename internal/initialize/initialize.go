@@ -1,20 +1,20 @@
 package initialize
 
 import (
-	"go-simple-api/internal/config"
-	"go-simple-api/internal/delivery/http/middleware"
-	"go-simple-api/internal/infrastructure/database"
-	"go-simple-api/internal/infrastructure/logger"
+	"go-clean-api/internal/config"
+	"go-clean-api/internal/delivery/http/middleware"
+	"go-clean-api/internal/infrastructure/database"
+	"go-clean-api/internal/infrastructure/logger"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type Container struct {
-	Config            *config.Config
-	DbGolangSimpleApi *gorm.DB
-	ZapLogger         *zap.Logger
-	Middlewares       *middleware.Middlewares
+	Config           *config.Config
+	DbGolangCleanApi *gorm.DB
+	ZapLogger        *zap.Logger
+	Middlewares      *middleware.Middlewares
 }
 
 func NewContainer() *Container {
@@ -38,10 +38,10 @@ func NewContainer() *Container {
 	middlewares := middleware.Load(conf, log)
 
 	return &Container{
-		Config:            conf,
-		ZapLogger:         log,
-		DbGolangSimpleApi: db,
-		Middlewares:       middlewares,
+		Config:           conf,
+		ZapLogger:        log,
+		DbGolangCleanApi: db,
+		Middlewares:      middlewares,
 	}
 
 }

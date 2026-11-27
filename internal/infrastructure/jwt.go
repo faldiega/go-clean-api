@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"go-simple-api/internal/delivery/http/dto"
+	"go-clean-api/internal/delivery/http/dto"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"

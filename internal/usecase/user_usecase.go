@@ -2,12 +2,12 @@ package usecase
 
 import (
 	"context"
-	"go-simple-api/internal/domain/entity"
-	"go-simple-api/internal/domain/repository"
-	"go-simple-api/internal/domain/usecase"
-	"go-simple-api/pkg/common/constants"
-	pkgLogger "go-simple-api/pkg/common/logger"
-	"go-simple-api/pkg/common/pagination"
+	"go-clean-api/internal/domain/entity"
+	"go-clean-api/internal/domain/repository"
+	"go-clean-api/internal/domain/usecase"
+	"go-clean-api/pkg/common/constants"
+	pkgLogger "go-clean-api/pkg/common/logger"
+	"go-clean-api/pkg/common/pagination"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm/utils"
