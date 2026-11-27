@@ -1,0 +1,22 @@
+# VCS & editor
+.git
+.gitignore
+.gitattributes
+.vscode
+.idea
+
+# Secret / konfigurasi lokal (JANGAN ikut ke build context)
+**/*.env
+
+# Artefak lokal
+logs/
+**/logs
+bin/
+tmp/
+*.log
+
+# Tidak dibutuhkan untuk build
+*.md
+Dockerfile
+.dockerignore
+docker-compose*.yml
