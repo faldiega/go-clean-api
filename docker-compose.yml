@@ -1,0 +1,64 @@
+name: go-clean-api
+
+services:
+  api:
+    build:
+      context: .
+    image: go-clean-api:dev
+    ports:
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
+    # Seluruh isi config.env di-inject sebagai environment variable container
+    env_file:
+      - config.env
+    # Nilai di sini MENGALAHKAN env_file, dan godotenv.Load tidak menimpa env yang sudah ada
+    environment:
+      APP_HOST: 0.0.0.0        # "localhost" tidak bisa diakses dari luar container
+      DB_HOST: postgres        # nama service, bukan localhost
+      DB_PORT: "5432"          # port internal Postgres di network compose
+      TZ: Asia/Jakarta         # sesuaikan zona waktu; mempengaruhi timestamp log
+    volumes:
+      - applogs:/app/logs      # lumberjack menulis ke /app/logs/<LOG_FILENAME>.log
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1:$${APP_PORT:-8080}/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    stop_grace_period: 30s     # selaras dengan APP_TIMEOUT: beri waktu graceful shutdown
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:                   # batasi ukuran log docker (stdout) agar tidak membengkak
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: "${DB_USER:?jalankan dengan: docker compose --env-file config.env ...}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:?jalankan dengan: docker compose --env-file config.env ...}"
+      POSTGRES_DB: "${DB_NAME:?jalankan dengan: docker compose --env-file config.env ...}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Aktifkan jika butuh skema awal (hanya dijalankan sekali, saat volume masih kosong):
+      # - ./db/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:5433:5432"  # akses dari DBeaver Windows: localhost:5433 (5432 mungkin dipakai Postgres lokal)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  applogs:

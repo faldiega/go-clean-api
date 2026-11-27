@@ -26,6 +26,7 @@ go.work.sum
 
 # env file
 .env
+config.env
 
 # Editor/IDE
 # .idea/
@@ -33,3 +34,4 @@ go.work.sum
 
 # Logging
 logs
+*.log

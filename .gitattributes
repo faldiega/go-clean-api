@@ -1,0 +1,2 @@
+# Paksa LF di semua file teks supaya tidak ada masalah CRLF antara Windows dan container Linux
+* text=auto eol=lf
